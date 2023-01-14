@@ -2,6 +2,8 @@
  * png.c
  *
  * This program loads and renders a PNG image.
+ *
+ * To compile this program, append "-lSDL2_image" to your compile command from init.c
  */
 
 #include <stdio.h>
@@ -98,9 +100,11 @@ int main(int argc, char **argv)
 		SDL_RenderClear(ren);
 
 		// Source rectangle
+		// This is a rectangle that selects which part of the texture to draw
 		SDL_Rect *srect = NULL;
 
-		// Display rectangle
+		// Destination rectangle
+		// This is a rectangle that selects which part of the screen to draw the texture to
 		SDL_Rect *drect = NULL;
 
 		SDL_RenderCopy(ren, tex, srect, drect);
