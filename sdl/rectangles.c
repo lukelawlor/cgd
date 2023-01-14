@@ -43,11 +43,6 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	// Set the renderer draw color
-	// The 4 numbers passed here are red, green, blue, and alpha
-	// They go from 0-255
-	// Alpha indicates transparency
-
 	// Handle SDL events
 	SDL_Event e;
 	while (true)
