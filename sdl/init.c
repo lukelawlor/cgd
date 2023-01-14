@@ -27,6 +27,8 @@ int main(int argc, char **argv)
 
 	printf("SDL has successfully initialized!\n");
 
+	SDL_Window *win;
+
 	// SDL_Quit() must be called to shut SDL down
 	SDL_Quit();
 	return 0;
