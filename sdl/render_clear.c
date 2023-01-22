@@ -72,6 +72,7 @@ int main(int argc, char **argv)
 		SDL_RenderClear(ren);
 
 		// Update the screen to reflect the renderer's changes to it
+		// NOTE: because we are using VSYNC (we used the flag SDL_RENDERER_PRESENTVSYNC to create the renderer) we don't have to call SDL_Delay() to delay the loop. A call to SDL_RendererPresent() will automatically wait until your monitor can be refreshed to continue the program.
 		SDL_RenderPresent(ren);
 	}
 

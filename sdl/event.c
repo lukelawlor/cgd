@@ -57,6 +57,10 @@ int main(int argc, char **argv)
 				break;
 			}
 		}
+
+		// Delay the program by 16 milliseconds so the loop is run at roughly 60fps
+		// This is not the best method of timing since it doesn't take monitor refresh rates into account, but for these test programs it's fine
+		SDL_Delay(16);
 	}
 
 	// Free resources and exit
