@@ -17,11 +17,10 @@
 int main(int argc, char **argv)
 {
 	int exit_code = 1;
-
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		PERR("SDL_Init failed. %s", SDL_GetError());
-		return 1;
+		goto l_exit;
 	}
 
 	// Initialize SDL_image and enable PNG loading
@@ -29,48 +28,52 @@ int main(int argc, char **argv)
 	if (!(IMG_Init(img_flags) & img_flags))
 	{
 		PERR("IMG_Init failed. %s", IMG_GetError());
-		SDL_Quit();
-		return 1;
+		goto l_exit;
 	}
 
-	// Create a window
-	SDL_Window *win = NULL;
+	// Create the window
 	const char *win_name = "good window";
 	const int win_width = 640;
 	const int win_height = 480;
-
-	if ((win = SDL_CreateWindow(win_name, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, win_width, win_height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE)) == NULL)
+	SDL_Window *win = SDL_CreateWindow(
+		win_name,
+		SDL_WINDOWPOS_UNDEFINED,
+		SDL_WINDOWPOS_UNDEFINED,
+		win_width,
+		win_height,
+		SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
+	);
+	if (win == NULL)
 	{
 		PERR("SDL_CreateWindow failed. %s", SDL_GetError());
 		goto l_exit;
 	}
 
-	// Create a renderer
-	SDL_Renderer *ren = NULL;
+	// Create the renderer
 	const int ren_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
-	if ((ren = SDL_CreateRenderer(win, -1, ren_flags)) == NULL)
+	SDL_Renderer *ren = SDL_CreateRenderer(win, -1, ren_flags);
+	if (ren == NULL)
 	{
-		PERR("SDL_CreateRenderer failed. %s", SDL_GetError());
+		PERR("SDL_CreateRenderer failed. %s\n", SDL_GetError());
 		goto l_exit;
 	}
 
 	// Create a surface
-	// This is the image storage format used by SDL
-	// We will load a PNG into it and then convert it to a texture to be used by our graphics card
-	SDL_Surface *surf = NULL;
-
-	// Create a texture
-	SDL_Texture *tex = NULL;
+	// This is the general image storage format used by SDL
+	// Here we are loading a PNG into it
+	SDL_Surface *surf = IMG_Load("dude.png");
 
 	// Load a PNG into surf
-	if ((surf = IMG_Load("dude.png")) == NULL)
+	if (surf == NULL)
 	{
 		PERR("IMG_Load failed. %s", IMG_GetError());
 		goto l_exit;
 	}
 
-	// Conver the surface to a texture
-	if ((tex = SDL_CreateTextureFromSurface(ren, surf)) == NULL)
+	// Create a texture
+	// SDL's renderer can only render textures, so we will convert our surface into a texture to display it on our window
+	SDL_Texture *tex = SDL_CreateTextureFromSurface(ren, surf);
+	if (tex == NULL)
 	{
 		PERR("SDL_CreateTextureFromSurface failed. %s", SDL_GetError());
 		goto l_exit;
@@ -78,18 +81,23 @@ int main(int argc, char **argv)
 	
 	// Now that the surface has been converted to a texture, we no longer need it
 	SDL_FreeSurface(surf);
+
+	// We're setting surf to NULL here so when SDL_FreeSurface() is called again later there's no error
+	// Attempting to free the same piece of memory twice will cause an error in SDL_FreeSurface() just as it does with free()
 	surf = NULL;
 
-	// Handle SDL events
+	// Handle SDL events in a loop
 	SDL_Event e;
-	while (true)
+	bool game_running = true;
+	while (game_running)
 	{
 		while (SDL_PollEvent(&e) != 0)
 		{
 			switch (e.type)
 			{
 			case SDL_QUIT:
-				goto l_end;
+				game_running = false;
+				break;
 			}
 		}
 
@@ -101,23 +109,23 @@ int main(int argc, char **argv)
 
 		// Source rectangle
 		// This is a rectangle that selects which part of the texture to draw
+		// If NULL, the entire texture is selected
 		SDL_Rect *srect = NULL;
 
 		// Destination rectangle
 		// This is a rectangle that selects which part of the screen to draw the texture to
+		// If NULL, the entire screen is selected
 		SDL_Rect *drect = NULL;
 
+		// Render the texture
 		SDL_RenderCopy(ren, tex, srect, drect);
 		
 		// Update the screen to reflect the renderer's changes to it
 		SDL_RenderPresent(ren);
 	}
 
-	// Render loop end
-l_end:
-	exit_code = 0;
-
 	// Free resources and exit
+	exit_code = 0;
 l_exit:
 	SDL_FreeSurface(surf);
 	SDL_DestroyTexture(tex);

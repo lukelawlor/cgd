@@ -13,42 +13,56 @@
 
 int main(int argc, char **argv)
 {
+	int exit_code = 1;
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		PERR("SDL_Init failed. %s", SDL_GetError());
-		return 1;
+		goto l_exit;
 	}
 	
-	SDL_Window *win;
+	// Create the window
 	const char *win_name = "good window";
 	const int win_width = 640;
 	const int win_height = 480;
-
-	if ((win = SDL_CreateWindow(win_name, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, win_width, win_height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE)) == NULL)
+	SDL_Window *win = SDL_CreateWindow(
+		win_name,
+		SDL_WINDOWPOS_UNDEFINED,
+		SDL_WINDOWPOS_UNDEFINED,
+		win_width,
+		win_height,
+		SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
+	);
+	if (win == NULL)
 	{
 		PERR("SDL_CreateWindow failed. %s", SDL_GetError());
-
-		SDL_Quit();
-		return 1;
+		goto l_exit;
 	}
 
-	// Handle SDL events
+	// Handle SDL events in a loop
 	SDL_Event e;
-	while (true)
+	bool game_running = true;
+	while (game_running)
 	{
+		// SDL_PollEvent() will write event data to our event object
+		// When all events have been processed, it returns 0
 		while (SDL_PollEvent(&e) != 0)
 		{
+			// Check what type of event was activated
 			switch (e.type)
 			{
 			case SDL_QUIT:
-				goto l_exit;
+				// An SDL_QUIT event type indicates that something has signaled our program to quit
+				// This happens when you click the X on the window to close it
+				game_running = false;
+				break;
 			}
 		}
 	}
 
 	// Free resources and exit
+	exit_code = 0;
 l_exit:
 	SDL_DestroyWindow(win);
 	SDL_Quit();
-	return 0;
+	return exit_code;
 }

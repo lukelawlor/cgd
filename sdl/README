@@ -18,4 +18,6 @@ To get the most out of these tutorials, it's best that you read through the sour
 	png.c            - Loading a PNG image with SDL_image and rendering it
 
 Whenever you see a new SDL function being used, make sure you read up about it on the SDL wiki:
-	https://wiki.libsdl.org/SDL2/CategoryAPI
+	For SDL:         https://wiki.libsdl.org/SDL2/CategoryAPI
+	For SDL_image:   https://wiki.libsdl.org/SDL_image/CategoryAPI
+	For SDL_mixer:   https://wiki.libsdl.org/SDL_mixer/CategoryAPI

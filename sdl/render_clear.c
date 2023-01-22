@@ -13,34 +13,38 @@
 
 int main(int argc, char **argv)
 {
+	int exit_code = 1;
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		PERR("SDL_Init failed. %s", SDL_GetError());
-		return 1;
+		goto l_exit;
 	}
 
-	// Create a window
-	SDL_Window *win;
+	// Create the window
 	const char *win_name = "good window";
 	const int win_width = 640;
 	const int win_height = 480;
-
-	if ((win = SDL_CreateWindow(win_name, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, win_width, win_height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE)) == NULL)
+	SDL_Window *win = SDL_CreateWindow(
+		win_name,
+		SDL_WINDOWPOS_UNDEFINED,
+		SDL_WINDOWPOS_UNDEFINED,
+		win_width,
+		win_height,
+		SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
+	);
+	if (win == NULL)
 	{
 		PERR("SDL_CreateWindow failed. %s", SDL_GetError());
-		SDL_Quit();
-		return 1;
+		goto l_exit;
 	}
 
-	// Create a renderer
-	SDL_Renderer *ren;
+	// Create the renderer
 	const int ren_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
-	if ((ren = SDL_CreateRenderer(win, -1, ren_flags)) == NULL)
+	SDL_Renderer *ren = SDL_CreateRenderer(win, -1, ren_flags);
+	if (ren == NULL)
 	{
 		PERR("SDL_CreateRenderer failed. %s\n", SDL_GetError());
-		SDL_DestroyWindow(win);
-		SDL_Quit();
-		return 1;
+		goto l_exit;
 	}
 
 	// Set the renderer draw color
@@ -49,16 +53,18 @@ int main(int argc, char **argv)
 	// Alpha indicates transparency
 	SDL_SetRenderDrawColor(ren, 255, 0, 0, 255);
 
-	// Handle SDL events
+	// Handle SDL events in a loop
 	SDL_Event e;
-	while (true)
+	bool game_running = true;
+	while (game_running)
 	{
 		while (SDL_PollEvent(&e) != 0)
 		{
 			switch (e.type)
 			{
 			case SDL_QUIT:
-				goto l_exit;
+				game_running = false;
+				break;
 			}
 		}
 
@@ -70,9 +76,10 @@ int main(int argc, char **argv)
 	}
 
 	// Free resources and exit
+	exit_code = 0;
 l_exit:
 	SDL_DestroyRenderer(ren);
 	SDL_DestroyWindow(win);
 	SDL_Quit();
-	return 0;
+	return exit_code;
 }
