@@ -1,7 +1,9 @@
 /*
  * error.h
  *
- * This file contains a macro for printing errors.
+ * This file contains a macro for printing errors called PERR().
+ *
+ * You can call it with the same parameters as printf().
  */
 
 #ifndef	ERROR_H
@@ -18,7 +20,7 @@
 					fprintf(stderr, PERR_END);\
 				}
 #else
-	#define	PERR(...)
+	#define	PERR(...)	do{}while(0)
 #endif
 
 #endif
