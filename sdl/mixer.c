@@ -59,8 +59,15 @@ int main(int argc, char **argv)
 		goto l_exit;
 	}
 
+	// Initialize MP3 loading
+	const int mix_flags = MIX_INIT_MP3;
+	if (!(Mix_Init(mix_flags) & mix_flags))
+	{
+		PERR("Mix_Init failed. %s", Mix_GetError());
+		goto l_exit;
+	}
+
 	// Open the audio device
-	// NOTE: There is a function called Mix_Init() that can be used to initialize various music libraries, but we won't be calling it here since we're only playing sound effects
 	if (Mix_OpenAudio(
 		// Audio frequency in hertz
 		44100,
@@ -100,7 +107,6 @@ int main(int argc, char **argv)
 	// Handle SDL events in a loop
 	SDL_Event e;
 	bool game_running = true;
-	printf("Focus the window to detect keyboard input\n");
 	while (game_running)
 	{
 		while (SDL_PollEvent(&e) != 0)
