@@ -14,6 +14,14 @@
 int main(int argc, char **argv)
 {
 	int exit_code = 1;
+
+	// The window
+	SDL_Window *win = NULL;
+
+	// The renderer
+	SDL_Renderer *ren = NULL;
+
+	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		PERR("SDL_Init failed. %s", SDL_GetError());
@@ -24,7 +32,7 @@ int main(int argc, char **argv)
 	const char *win_name = "good window";
 	const int win_width = 640;
 	const int win_height = 480;
-	SDL_Window *win = SDL_CreateWindow(
+	win = SDL_CreateWindow(
 		win_name,
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
@@ -40,7 +48,7 @@ int main(int argc, char **argv)
 
 	// Create the renderer
 	const int ren_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
-	SDL_Renderer *ren = SDL_CreateRenderer(win, -1, ren_flags);
+	ren = SDL_CreateRenderer(win, -1, ren_flags);
 	if (ren == NULL)
 	{
 		PERR("SDL_CreateRenderer failed. %s\n", SDL_GetError());

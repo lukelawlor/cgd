@@ -14,6 +14,11 @@
 int main(int argc, char **argv)
 {
 	int exit_code = 1;
+
+	// The window
+	SDL_Window *win = NULL;
+
+	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		PERR("SDL_Init failed. %s", SDL_GetError());
@@ -24,7 +29,7 @@ int main(int argc, char **argv)
 	const char *win_name = "mouse";
 	const int win_width = 200;
 	const int win_height = 200;
-	SDL_Window *win = SDL_CreateWindow(
+	win = SDL_CreateWindow(
 		win_name,
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,

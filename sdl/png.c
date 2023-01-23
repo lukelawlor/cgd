@@ -17,6 +17,20 @@
 int main(int argc, char **argv)
 {
 	int exit_code = 1;
+
+	// The window
+	SDL_Window *win = NULL;
+
+	// The renderer
+	SDL_Renderer *ren = NULL;
+
+	// The surface
+	SDL_Surface *surf = NULL;
+
+	// The texture
+	SDL_Texture *tex = NULL;
+
+	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		PERR("SDL_Init failed. %s", SDL_GetError());
@@ -32,10 +46,10 @@ int main(int argc, char **argv)
 	}
 
 	// Create the window
-	const char *win_name = "good window";
+	const char *win_name = "png";
 	const int win_width = 640;
 	const int win_height = 480;
-	SDL_Window *win = SDL_CreateWindow(
+	win = SDL_CreateWindow(
 		win_name,
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
@@ -51,7 +65,7 @@ int main(int argc, char **argv)
 
 	// Create the renderer
 	const int ren_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
-	SDL_Renderer *ren = SDL_CreateRenderer(win, -1, ren_flags);
+	ren = SDL_CreateRenderer(win, -1, ren_flags);
 	if (ren == NULL)
 	{
 		PERR("SDL_CreateRenderer failed. %s\n", SDL_GetError());
@@ -61,9 +75,7 @@ int main(int argc, char **argv)
 	// Create a surface
 	// This is the general image storage format used by SDL
 	// Here we are loading a PNG into it
-	SDL_Surface *surf = IMG_Load("dude.png");
-
-	// Load a PNG into surf
+	surf = IMG_Load("dude.png");
 	if (surf == NULL)
 	{
 		PERR("IMG_Load failed. %s", IMG_GetError());
@@ -72,7 +84,7 @@ int main(int argc, char **argv)
 
 	// Create a texture
 	// SDL's renderer can only render textures, so we will convert our surface into a texture to display it on our window
-	SDL_Texture *tex = SDL_CreateTextureFromSurface(ren, surf);
+	tex = SDL_CreateTextureFromSurface(ren, surf);
 	if (tex == NULL)
 	{
 		PERR("SDL_CreateTextureFromSurface failed. %s", SDL_GetError());
