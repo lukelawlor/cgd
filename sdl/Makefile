@@ -3,7 +3,7 @@ CC = gcc
 
 # C flags
 # -Wall and -Wextra print all error messages
-CFLAGS = -Wall -Wextra -w
+CFLAGS = -Wall -Wextra
 
 # Linker flags
 LDFLAGS = -lSDL2 -lSDL2_image -lSDL2_mixer

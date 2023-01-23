@@ -102,24 +102,24 @@ int main(int argc, char **argv)
 		}
 
 		// See render_clear.c for explanation of this
-		SDL_SetRenderDrawColor(ren, 0, 60, 180, 255);
+		SDL_SetRenderDrawColor(ren, 0, 255, 255, 255);
 
 		// Clear the screen with the renderer draw color (black atm)
 		SDL_RenderClear(ren);
 
 		// Source rectangle
-		// This is a rectangle that selects which part of the texture to draw
+		// This is a pointer to a rectangle that selects which part of the texture to draw
 		// If NULL, the entire texture is selected
 		SDL_Rect *srect = NULL;
 
 		// Destination rectangle
-		// This is a rectangle that selects which part of the screen to draw the texture to
+		// This is a pointer to a rectangle that selects which part of the screen to draw the texture to
 		// If NULL, the entire screen is selected
 		SDL_Rect *drect = NULL;
 
-		// Render the texture
+		// Render the entire texture across the entire screen
 		SDL_RenderCopy(ren, tex, srect, drect);
-		
+
 		// Update the screen to reflect the renderer's changes to it
 		SDL_RenderPresent(ren);
 	}
