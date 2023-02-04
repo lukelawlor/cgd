@@ -14,6 +14,8 @@
 
 #include "error.h"
 
+#include <stdlib.h>
+
 int main(int argc, char **argv)
 {
 	int exit_code = 1;

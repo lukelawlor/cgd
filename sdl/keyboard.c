@@ -44,7 +44,7 @@ int main(int argc, char **argv)
 	}
 
 	// Get the keyboard state
-	Uint8 *key_state = SDL_GetKeyboardState(NULL);
+	const Uint8 *key_state = SDL_GetKeyboardState(NULL);
 	
 	// Handle SDL events in a loop
 	SDL_Event e;
