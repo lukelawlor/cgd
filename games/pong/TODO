@@ -1,4 +1,5 @@
 *	Paddles
-Ball
+*	Ball
+Ball-paddle collisions
 Scoreboard
 Bitmap font rendering
