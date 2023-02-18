@@ -6,41 +6,50 @@
 
 #include <SDL2/SDL.h>
 
+#include <stdlib.h>
+
 #include "ball.h"
+#include "collision.h"	// For ball_hit_any_paddle()
 #include "colors.h"
 #include "main.h"	// For g_ren
-
-#define	BALL_WIDTH	20
-#define	BALL_HEIGHT	20
-#define	BALL_X_MIN	ARENA_BORDER
-#define	BALL_X_MAX	(WIN_WIDTH - ARENA_BORDER - BALL_WIDTH)
-#define	BALL_Y_MIN	ARENA_BORDER
-#define	BALL_Y_MAX	(WIN_HEIGHT - ARENA_BORDER - BALL_HEIGHT)
 
 // Updates a ball
 void ball_update(Ball *ball)
 {
+	ball->x += (((rand() % 101) / 100.0) - 0.5) * 8;
+	ball->y += (((rand() % 101) / 100.0) - 0.5) * 8;
+
+	// Move the ball and bounce it off of the game world border
 	ball->x += ball->xs;
 	if (ball->x > BALL_X_MAX)
 	{
 		ball->x = BALL_X_MAX;
-		ball->xs *= -1.1;
+		ball->xs *= -1;
 	}
 	else if (ball->x < BALL_X_MIN)
 	{
 		ball->x = BALL_X_MIN;
-		ball->xs *= -1.2;
+		ball->xs *= -1;
 	}
 	ball->y += ball->ys;
 	if (ball->y > BALL_Y_MAX)
 	{
 		ball->y = BALL_Y_MAX;
-		ball->ys *= -1.3;
+		ball->ys *= -1;
 	}
 	else if (ball->y < BALL_Y_MIN)
 	{
 		ball->y = BALL_Y_MIN;
-		ball->ys *= -1.4;
+		ball->ys *= -1;
+	}
+
+	// Handle paddle collisions
+	if (ball_hit_any_paddle(ball))
+	{
+		ball->xs *= -1;
+		ball->ys *= -1;
+		ball->x += ball->xs;
+		ball->y += ball->ys;
 	}
 }
 

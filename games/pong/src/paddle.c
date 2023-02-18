@@ -14,12 +14,15 @@
 #include "paddle.h"
 #include "util/math.h"	// For clamp()
 
-// Paddle settings
-#define	PADDLE_SPEED	16
-#define	PADDLE_WIDTH	12
-#define	PADDLE_HEIGHT	40
-#define	PADDLE_Y_MIN	ARENA_BORDER
-#define	PADDLE_Y_MAX	(WIN_HEIGHT - ARENA_BORDER - PADDLE_HEIGHT)
+Paddle g_left_paddle = {
+	ARENA_BORDER,
+	ARENA_BORDER,
+};
+
+Paddle g_right_paddle = {
+	WIN_WIDTH - ARENA_BORDER - PADDLE_WIDTH,
+	ARENA_BORDER,
+};
 
 // Updates a paddle
 void paddle_update(Paddle *paddle, bool is_left_paddle)

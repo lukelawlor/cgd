@@ -21,6 +21,9 @@ typedef struct Paddle{
 	double y;
 } Paddle;
 
+extern Paddle g_left_paddle;
+extern Paddle g_right_paddle;
+
 // Updates a paddle
 void paddle_update(Paddle *paddle, bool is_left_paddle);
 

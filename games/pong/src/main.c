@@ -67,14 +67,6 @@ int main(int argc, char **argv)
 	g_key_state = SDL_GetKeyboardState(NULL);
 
 	// Initialize game objects
-	Paddle left_paddle = {
-		ARENA_BORDER,
-		ARENA_BORDER,
-	};
-	Paddle right_paddle = {
-		WIN_WIDTH - ARENA_BORDER - PADDLE_WIDTH,
-		ARENA_BORDER,
-	};
 	Ball ball = {
 		80,
 		80,
@@ -106,8 +98,8 @@ int main(int argc, char **argv)
 			}
 		}
 
-		paddle_update(&left_paddle, true);
-		paddle_update(&right_paddle, false);
+		paddle_update(&g_left_paddle, true);
+		paddle_update(&g_right_paddle, false);
 		ball_update(&ball);
 
 		SDL_SetRenderDrawColor(
@@ -119,8 +111,8 @@ int main(int argc, char **argv)
 		);
 		SDL_RenderClear(g_ren);
 
-		paddle_draw(&left_paddle);
-		paddle_draw(&right_paddle);
+		paddle_draw(&g_left_paddle);
+		paddle_draw(&g_right_paddle);
 		ball_draw(&ball);
 
 		SDL_RenderPresent(g_ren);
