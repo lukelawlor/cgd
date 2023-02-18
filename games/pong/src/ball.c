@@ -11,7 +11,8 @@
 #include "ball.h"
 #include "collision.h"	// For ball_hit_any_paddle()
 #include "colors.h"
-#include "main.h"	// For g_ren
+#include "game.h"	// For ARENA_BORDER
+#include "sdl.h"	// For g_ren
 
 // Updates a ball
 void ball_update(Ball *ball)

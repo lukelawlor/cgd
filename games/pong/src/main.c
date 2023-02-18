@@ -12,61 +12,17 @@
 #include "ball.h"
 #include "colors.h"
 #include "error.h"
-#include "main.h"
+#include "game.h"
+#include "init.h"
 #include "paddle.h"
-
-// Renderer flags
-#define	REN_FLAGS	(SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)
-
-// SDL objects
-SDL_Window *g_win = NULL;
-SDL_Renderer *g_ren = NULL;
-
-// Get the keyboard state
-const Uint8 *g_key_state = NULL;
+#include "sdl.h"
 
 int main(int argc, char **argv)
 {
-	int exit_code = 1;
+	if (game_init())
+		return 1;
 
-	// Init SDL
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
-	{
-		PERR("SDL_Init failed. %s\n", SDL_GetError());
-		goto l_exit;
-	}
-
-	// Create the window
-	g_win = SDL_CreateWindow(
-		"PONG",
-		SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED,
-		WIN_WIDTH,
-		WIN_HEIGHT,
-		SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
-	);
-	if (g_win == NULL)
-	{
-		PERR("SDL_CreateWindow like failed or stuff. %s\n", SDL_GetError());
-		goto l_exit;
-	}
-
-	// Create the renderer
-	g_ren = SDL_CreateRenderer(
-		g_win,
-		-1,
-		REN_FLAGS
-	);
-	if (g_ren == NULL)
-	{
-		PERR("SDL_CreateRenderer failed. %s\n", SDL_GetError());
-		goto l_exit;
-	}
-	
-	// Get keyboard state
-	g_key_state = SDL_GetKeyboardState(NULL);
-
-	// Initialize game objects
+	// Initialize ball
 	Ball ball = {
 		80,
 		80,
@@ -90,6 +46,7 @@ int main(int argc, char **argv)
 				switch (e.key.keysym.scancode)
 				{
 				case SDL_SCANCODE_Q:
+					// Quit the game when q is pressed
 					game_running = false;
 					break;
 				default:
@@ -117,11 +74,6 @@ int main(int argc, char **argv)
 
 		SDL_RenderPresent(g_ren);
 	}
-
-	exit_code = 0;
-l_exit:
-	SDL_DestroyWindow(g_win);
-	SDL_DestroyRenderer(g_ren);
-	SDL_Quit();
-	return exit_code;
+	game_quit();
+	return 0;
 }

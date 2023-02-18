@@ -1,18 +1,20 @@
 /*
- * main.h
+ * sdl.h
  *
- * miscellaneous macros
+ * contains SDL objects
  */
 
-#ifndef	MAIN_H
-#define	MAIN_H
+#ifndef	GAME_SDL_H
+#define	GAME_SDL_H
+
+#include <SDL2/SDL.h>
 
 // Window dimensions
 #define	WIN_WIDTH	800
 #define	WIN_HEIGHT	800
 
-// Border around the game world
-#define	ARENA_BORDER	40
+// Renderer creation flags
+#define	REN_FLAGS	(SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)
 
 // SDL objects
 extern SDL_Window *g_win;

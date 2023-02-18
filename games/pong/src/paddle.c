@@ -9,20 +9,14 @@
 #include <SDL2/SDL.h>
 
 #include "colors.h"
+#include "game.h"	// For ARENA_BORDER
 #include "keys.h"
-#include "main.h"	// For g_ren and g_key_state
+#include "sdl.h"	// For g_ren and g_key_state
 #include "paddle.h"
 #include "util/math.h"	// For clamp()
 
-Paddle g_left_paddle = {
-	ARENA_BORDER,
-	ARENA_BORDER,
-};
-
-Paddle g_right_paddle = {
-	WIN_WIDTH - ARENA_BORDER - PADDLE_WIDTH,
-	ARENA_BORDER,
-};
+Paddle g_left_paddle;
+Paddle g_right_paddle;
 
 // Updates a paddle
 void paddle_update(Paddle *paddle, bool is_left_paddle)
