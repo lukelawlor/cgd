@@ -9,10 +9,13 @@
 
 #include <stdbool.h>
 
+#include "game.h"	// For ARENA_BORDER
+#include "sdl.h"	// For WIN_HEIGHT
+
 // Paddle settings
 #define	PADDLE_SPEED	16
-#define	PADDLE_WIDTH	(120*4)
-#define	PADDLE_HEIGHT	(40*8*2)
+#define	PADDLE_WIDTH	12
+#define	PADDLE_HEIGHT	40
 #define	PADDLE_Y_MIN	ARENA_BORDER
 #define	PADDLE_Y_MAX	(WIN_HEIGHT - ARENA_BORDER - PADDLE_HEIGHT)
 

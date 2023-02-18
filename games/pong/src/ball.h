@@ -7,6 +7,9 @@
 #ifndef	BALL_H
 #define	BALL_H
 
+#include "game.h"	// For ARENA_BORDER
+#include "sdl.h"	// For WIN_WIDTH and WIN_HEIGHT
+
 #define	BALL_WIDTH	20
 #define	BALL_HEIGHT	20
 #define	BALL_X_MIN	ARENA_BORDER

@@ -54,12 +54,12 @@ int game_init(void)
 
 	// Initialize game objects
 	g_left_paddle = (Paddle) {
-		ARENA_BORDER,
-		ARENA_BORDER,
+		.x = ARENA_BORDER,
+		.y = ARENA_BORDER,
 	};
 	g_right_paddle = (Paddle) {
-		WIN_WIDTH - ARENA_BORDER - PADDLE_WIDTH,
-		ARENA_BORDER,
+		.x = WIN_WIDTH - ARENA_BORDER - PADDLE_WIDTH,
+		.y = ARENA_BORDER,
 	};
 
 	// Success

@@ -1,5 +1,19 @@
-*	Paddles
-*	Ball
-*	Ball-paddle collisions
-Bitmap font rendering
-Scoreboard
+Pong to-do list
+---
+
+Core gameplay
+	*	Paddles
+	*	Ball
+	*	Ball-paddle collisions
+	Scoreboard
+	Ball resetting once the edge of the world is hit
+
+Misc systems
+	Bitmap font rendering
+	Fixed framerate or timestep
+
+Polishing
+	Music
+	Sound effects
+	Textures
+	Saving & loading scoreboard data in a text file

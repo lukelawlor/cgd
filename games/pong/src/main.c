@@ -24,10 +24,10 @@ int main(int argc, char **argv)
 
 	// Initialize ball
 	Ball ball = {
-		80,
-		80,
-		4,
-		4,
+		.x = 80,
+		.y = 80,
+		.xs = 4,
+		.ys = 4,
 	};
 
 	// Game loop
@@ -55,10 +55,12 @@ int main(int argc, char **argv)
 			}
 		}
 
+		// Update game objects
 		paddle_update(&g_left_paddle, true);
 		paddle_update(&g_right_paddle, false);
 		ball_update(&ball);
 
+		// Clear the screen with the background color
 		SDL_SetRenderDrawColor(
 			g_ren,
 			WIN_COLOR_R,
@@ -68,10 +70,12 @@ int main(int argc, char **argv)
 		);
 		SDL_RenderClear(g_ren);
 
+		// Draw game objects
 		paddle_draw(&g_left_paddle);
 		paddle_draw(&g_right_paddle);
 		ball_draw(&ball);
 
+		// Update screen
 		SDL_RenderPresent(g_ren);
 	}
 	game_quit();

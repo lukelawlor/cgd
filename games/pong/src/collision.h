@@ -9,6 +9,10 @@
 
 #include <stdbool.h>
 
+#include <SDL2/SDL.h>
+
+#include "ball.h"
+
 // Returns true if the ball is colliding with a paddle
 bool ball_hit_any_paddle(Ball *ball);
 
