@@ -5,12 +5,14 @@
  */
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include "error.h"
 #include "game.h"
 #include "init.h"
 #include "paddle.h"
 #include "sdl.h"
+#include "texture.h"
 
 // Initializes everything needed to start the game loop, returns nonzero on error
 int game_init(void)
@@ -48,6 +50,13 @@ int game_init(void)
 		PERR("SDL_CreateRenderer failed. %s\n", SDL_GetError());
 		goto l_error;
 	}
+
+	// Initialize SDL_image
+	if (!(IMG_Init(IMG_FLAGS) & IMG_FLAGS))
+	{
+		PERR("IMG_Init failed. %s\n", IMG_GetError());
+		goto l_error;
+	}
 	
 	// Get keyboard state
 	g_key_state = SDL_GetKeyboardState(NULL);
@@ -62,6 +71,9 @@ int game_init(void)
 		.y = ARENA_BORDER,
 	};
 
+	if (tex_load_all())
+		goto l_error;
+
 	// Success
 	return 0;
 l_error:
@@ -72,7 +84,9 @@ l_error:
 // Undoes initialization steps done by game_init()
 void game_quit(void)
 {
+	tex_free_all();
 	SDL_DestroyWindow(g_win);
 	SDL_DestroyRenderer(g_ren);
+	IMG_Quit();
 	SDL_Quit();
 }

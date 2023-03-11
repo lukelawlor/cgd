@@ -12,6 +12,7 @@
 #include "ball.h"
 #include "colors.h"
 #include "error.h"
+#include "font.h"
 #include "game.h"
 #include "init.h"
 #include "paddle.h"
@@ -69,6 +70,16 @@ int main(int argc, char **argv)
 			255
 		);
 		SDL_RenderClear(g_ren);
+
+		// Draw text test
+		font_draw_text(
+				"999991239479812739587192834\n"
+				"12394701283579182734\n"
+				"2938519234\n"
+				"123947012981293421\n"
+				"59871982374928314\n"
+				"129038579081720938719023704871290483769018237490871203986170239874908123756901238748901273890512389075891268901273905812390876509182374901290357\n"
+				, 20, 50);
 
 		// Draw game objects
 		paddle_draw(&g_left_paddle);

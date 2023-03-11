@@ -5,15 +5,21 @@ Core gameplay
 	*	Paddles
 	*	Ball
 	*	Ball-paddle collisions
+	Fix ball getting stuck in paddle
+	Angular ball-paddle collisions
 	Scoreboard
 	Ball resetting once the edge of the world is hit
 
 Misc systems
-	Bitmap font rendering
 	Fixed framerate or timestep
+
+Optimization
+	Store scancodes for up & down movement in paddle struct
 
 Polishing
 	Music
 	Sound effects
 	Textures
-	Saving & loading scoreboard data in a text file
+	Screenshake
+	High score screen
+	Saving & loading high score data in a text file

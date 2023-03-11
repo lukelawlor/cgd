@@ -16,6 +16,9 @@
 // Renderer creation flags
 #define	REN_FLAGS	(SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)
 
+// SDL_image init flags
+#define	IMG_FLAGS	IMG_INIT_PNG
+
 // SDL objects
 extern SDL_Window *g_win;
 extern SDL_Renderer *g_ren;
