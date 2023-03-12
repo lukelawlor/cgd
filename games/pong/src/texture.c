@@ -12,11 +12,11 @@
 #include "sdl.h"			// For g_ren
 #include "texture.h"
 
-// Loads a texture & checks for errors
+// Loads a texture & handles errors
 // Should only be used in tex_load_all()
 #define	TEX_LOAD(name)	tex_##name = tex_load_png(DIR_TEX #name ".png"); \
 						if (tex_##name == NULL) \
-							return 1
+							goto l_error
 
 // Textures
 SDL_Texture *tex_font;
@@ -27,10 +27,18 @@ static SDL_Texture *tex_load_png(const char *path);
 // Loads all game textures, returns nonzero on error
 int tex_load_all(void)
 {
+	// Load textures
 	TEX_LOAD(font);
+
+	// Change font color
 	if (SDL_SetTextureColorMod(tex_font, 128, 180, 33) == -1)
 		PERR("texture color mod did not work for the font. NOT SICK GUYS.");
 	return 0;
+
+l_error:
+	// Execution reaches here if any single texture fails to load
+	tex_free_all();
+	return 1;
 }
 
 // Frees all game textures
