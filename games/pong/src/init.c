@@ -11,6 +11,7 @@
 #include "game.h"
 #include "init.h"
 #include "paddle.h"
+#include "score.h"
 #include "sdl.h"
 #include "texture.h"
 
@@ -74,6 +75,7 @@ int game_init(void)
 		.key_up = SDL_SCANCODE_UP,
 		.key_down = SDL_SCANCODE_DOWN,
 	};
+	g_score = (Score) {0, 0};
 
 	if (tex_load_all())
 		goto l_error;
