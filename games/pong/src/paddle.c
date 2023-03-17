@@ -19,23 +19,13 @@ Paddle g_left_paddle;
 Paddle g_right_paddle;
 
 // Updates a paddle
-void paddle_update(Paddle *paddle, bool is_left_paddle)
+void paddle_update(Paddle *paddle)
 {
 	// Check for keyboard presses to move the paddle
-	if (is_left_paddle)
-	{
-		if (g_key_state[KEY_PADDLE_LEFT_UP])
-			paddle->y -= PADDLE_SPEED;
-		if (g_key_state[KEY_PADDLE_LEFT_DOWN])
-			paddle->y += PADDLE_SPEED;
-	}
-	else
-	{
-		if (g_key_state[KEY_PADDLE_RIGHT_UP])
-			paddle->y -= PADDLE_SPEED;
-		if (g_key_state[KEY_PADDLE_RIGHT_DOWN])
-			paddle->y += PADDLE_SPEED;
-	}
+	if (g_key_state[paddle->key_up])
+		paddle->y -= PADDLE_SPEED;
+	if (g_key_state[paddle->key_down])
+		paddle->y += PADDLE_SPEED;
 
 	// Keep the paddle within the game world
 	paddle->y = clamp(

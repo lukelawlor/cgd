@@ -9,6 +9,8 @@
 
 #include <stdbool.h>
 
+#include <SDL2/SDL.h>	// For SDL_Scancode
+
 #include "game.h"	// For ARENA_BORDER
 #include "sdl.h"	// For WIN_HEIGHT
 
@@ -24,13 +26,17 @@ typedef struct Paddle{
 	// Position
 	double x;
 	double y;
+	
+	// Scancodes for up and down movement
+	SDL_Scancode key_up;
+	SDL_Scancode key_down;
 } Paddle;
 
 extern Paddle g_left_paddle;
 extern Paddle g_right_paddle;
 
 // Updates a paddle
-void paddle_update(Paddle *paddle, bool is_left_paddle);
+void paddle_update(Paddle *paddle);
 
 // Draws a paddle
 void paddle_draw(Paddle *paddle);

@@ -65,10 +65,14 @@ int game_init(void)
 	g_left_paddle = (Paddle) {
 		.x = ARENA_BORDER,
 		.y = ARENA_BORDER,
+		.key_up = SDL_SCANCODE_W,
+		.key_down = SDL_SCANCODE_S,
 	};
 	g_right_paddle = (Paddle) {
 		.x = WIN_WIDTH - ARENA_BORDER - PADDLE_WIDTH,
 		.y = ARENA_BORDER,
+		.key_up = SDL_SCANCODE_UP,
+		.key_down = SDL_SCANCODE_DOWN,
 	};
 
 	if (tex_load_all())

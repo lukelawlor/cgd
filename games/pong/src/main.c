@@ -57,8 +57,8 @@ int main(int argc, char **argv)
 		}
 
 		// Update game objects
-		paddle_update(&g_left_paddle, true);
-		paddle_update(&g_right_paddle, false);
+		paddle_update(&g_left_paddle);
+		paddle_update(&g_right_paddle);
 		ball_update(&ball);
 
 		// Clear the screen with the background color

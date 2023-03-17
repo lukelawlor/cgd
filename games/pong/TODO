@@ -7,14 +7,14 @@ Core gameplay
 	*	Ball-paddle collisions
 	Fix ball getting stuck in paddle
 	Angular ball-paddle collisions
-	Scoreboard
 	Ball resetting once the edge of the world is hit
+	Scoreboard
 
 Misc systems
 	Fixed framerate or timestep
 
 Optimization
-	Store scancodes for up & down movement in paddle struct
+	Nothing
 
 Polishing
 	Music
