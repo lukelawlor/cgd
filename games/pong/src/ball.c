@@ -65,8 +65,9 @@ void ball_update(Ball *ball)
 	if (ball_hit_any_paddle(ball))
 	{
 		ball->xs *= -1;
+		while (ball_hit_any_paddle(ball))
+			ball->x += ball->xs;
 		ball->ys *= -1;
-		ball->x += ball->xs;
 		ball->y += ball->ys;
 	}
 }

@@ -5,10 +5,7 @@ Core gameplay
 	*	Paddles
 	*	Ball
 	*	Ball-paddle collisions
-	Fix ball getting stuck in paddle
 	Angular ball-paddle collisions
-	Ball resetting once the edge of the world is hit
-	Scoreboard
 
 Misc systems
 	Fixed framerate or timestep
