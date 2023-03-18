@@ -13,8 +13,9 @@
 
 #include "ball.h"
 
-// Returns true if the ball is colliding with a paddle
-bool ball_hit_any_paddle(Ball *ball);
+// Returns a value in the range [0, PADDLE_HEIGHT] that represents where on the paddle the ball hit
+// If no paddle was hit, -1 is returned
+int ball_hit_any_paddle(Ball *ball);
 
 // Returns true if two rectangles are colliding
 bool rect_hit_rect(SDL_Rect *r1, SDL_Rect *r2);

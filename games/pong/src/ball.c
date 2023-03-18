@@ -13,8 +13,11 @@
 #include "colors.h"
 #include "error.h"
 #include "game.h"	// For ARENA_BORDER
+#include "paddle.h"	// For PADDLE_HEIGHT
 #include "score.h"
 #include "sdl.h"	// For g_ren, WIN_WIDTH, & WIN_HEIGHT
+#include "texture.h"	// For tex_ball
+#include "util/math.h"	// For sign()
 
 // Resets the ball's position to the center of the game
 static void ball_reset(Ball *ball);
@@ -22,8 +25,11 @@ static void ball_reset(Ball *ball);
 // Updates a ball
 void ball_update(Ball *ball)
 {
+	// Randomly move the ball
+#if 0 
 	ball->x += (((rand() % 101) / 100.0) - 0.5) * 8;
 	ball->y += (((rand() % 101) / 100.0) - 0.5) * 8;
+#endif
 
 	// Move the ball and bounce it off of the game world border
 
@@ -62,19 +68,27 @@ void ball_update(Ball *ball)
 	}
 
 	// Handle paddle collisions
-	if (ball_hit_any_paddle(ball))
+	int pos;
+	if ((pos = ball_hit_any_paddle(ball)) != -1)
 	{
-		ball->xs *= -1;
-		while (ball_hit_any_paddle(ball))
+		PERR("%d\n", pos);
+		int ball_xs_sign = signf(ball->xs);
+		ball->xs = -ball_xs_sign;
+		while (ball_hit_any_paddle(ball) != -1)
 			ball->x += ball->xs;
-		ball->ys *= -1;
-		ball->y += ball->ys;
+		ball->ys = clampf(((float) abs(pos - PADDLE_HEIGHT) / PADDLE_HEIGHT) * ball->maxs, ball->mins, ball->maxs);
+		ball->xs = clampf(((float) (PADDLE_HEIGHT - abs(pos - PADDLE_HEIGHT)) / PADDLE_HEIGHT) * ball->maxs, ball->mins, ball->maxs) * -ball_xs_sign;
 	}
 }
 
 // Draws a ball
 void ball_draw(Ball *ball)
 {
+	SDL_Rect drect = {ball->x, ball->y, BALL_WIDTH, BALL_HEIGHT};
+	SDL_Rect srect = {0, 0, 100, 100};
+	SDL_RenderCopy(g_ren, tex_ball, &srect, &drect);
+	// Draw a rectangle
+#if 0
 	SDL_SetRenderDrawColor(
 		g_ren,
 		BALL_COLOR_R,
@@ -82,8 +96,8 @@ void ball_draw(Ball *ball)
 		BALL_COLOR_B,
 		255
 	);
-	SDL_Rect drect = {ball->x, ball->y, 20, 20};
 	SDL_RenderFillRect(g_ren, &drect);
+#endif
 }
 
 // Resets the ball's position to the center of the game

@@ -11,6 +11,7 @@
 
 // Textures
 extern SDL_Texture *tex_font;
+extern SDL_Texture *tex_ball;
 
 // Loads all game textures, returns nonzero on error
 int tex_load_all(void);

@@ -29,7 +29,9 @@ int main(int argc, char **argv)
 		.x = 80,
 		.y = 80,
 		.xs = 4,
-		.ys = 4,
+		.ys = 0,
+		.maxs = 8,
+		.mins = 1,
 	};
 
 	// Game loop

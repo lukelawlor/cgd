@@ -20,6 +20,7 @@
 
 // Textures
 SDL_Texture *tex_font;
+SDL_Texture *tex_ball;
 
 // Loads a single texture, returns NULL on error
 static SDL_Texture *tex_load_png(const char *path);
@@ -29,6 +30,7 @@ int tex_load_all(void)
 {
 	// Load textures
 	TEX_LOAD(font);
+	TEX_LOAD(ball);
 
 	// Change font color
 	if (SDL_SetTextureColorMod(tex_font, 128, 180, 33) == -1)
@@ -45,6 +47,7 @@ l_error:
 void tex_free_all(void)
 {
 	SDL_DestroyTexture(tex_font);
+	SDL_DestroyTexture(tex_ball);
 }
 
 // Loads a single texture, returns NULL on error
