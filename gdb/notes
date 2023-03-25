@@ -3,6 +3,8 @@ GDB - The GNU Debugger
 
 GDB is a debugger for many programming languages including C and C++. Debuggers are programs that help you analyze the runtime of your program to eliminate bugs. GDB lets you pause your program during its execution, step through code, and print variable values.
 
+Learning a debugger, especially a command line driven one, may seem intimidating at first, but it's not difficult and will save you lots of time and effort when fixing your programs.
+
 To use GDB on your program, compile your code with the -g flag:
 
 	$ gcc -g program.c -o program
@@ -18,3 +20,50 @@ This will insert debugging information in your final executable file. This, amon
 To run a program with GDB, run GDB with the path to your program like so:
 
 	$ gdb ./program
+
+You will be brought to a prompt like this:
+
+	(gdb) _
+
+From here, you can start entering GDB commands.
+
+Command summary
+---
+run			run the program
+step			execute the current line and move to the next one
+next			same as step, but will skip over stepping into contents of functions
+break	FUNCTION	pause the program when FUNCTION is called
+break	LINE		pause the program when LINE in the current file where execution is happening is executed
+break	FILE:LINE	pause the program when LINE is executed in FILE
+watch	VAR		pause the program when variable VAR changes
+continue		continue to run the program until the next breakpoint
+info breakpoints	list all defined breakpoints with their numbers
+disable NUM		disable breakpoint with number NUM
+enable NUM		enable breakpoint with number NUM
+print	VAR		show the contents of a variable VAR
+set	VAR = VAL	change the value of variable VAR to VAL
+call	FUNCTION(...)	call a function
+backtrace		show what line of code is about to be executed
+list			show the lines of code around what line of code you are executing
+list	LINE		show the lines near line 40
+list	FILE:LINE	show the lines near LINE in FILE
+quit			quit GDB
+
+Misc. tips that are helpful
+---
+You can use shorthands for many command names:
+run		r
+step		s
+next		n
+break		b
+continue	c
+info		i
+disable		dis
+enable		en
+list		l
+quit		q
+backtrace	bt
+
+Pressing enter without typing anything on the command line will repeat your last command
+
+Pressing CTRL+C in GDB will force a pause to your program's execution.
