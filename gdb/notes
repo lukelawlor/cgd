@@ -1,0 +1,20 @@
+GDB - The GNU Debugger
+---
+
+GDB is a debugger for many programming languages including C and C++. Debuggers are programs that help you analyze the runtime of your program to eliminate bugs. GDB lets you pause your program during its execution, step through code, and print variable values.
+
+To use GDB on your program, compile your code with the -g flag:
+
+	$ gcc -g program.c -o program
+
+This will insert debugging information in your final executable file. This, among other things, includes the names for all variables in functions in your source code, which can then be processed by the debugger to make sense out of the executable.
+
+	Protip: If you want to remove the extra data added to your binaries from the -g flag, use the UNIX utility strip to remove it:
+
+		$ strip program
+
+	Even without using the -g flag, you will want to do this to your executables before shipping them over the internet because it will decrease file size.
+
+To run a program with GDB, run GDB with the path to your program like so:
+
+	$ gdb ./program

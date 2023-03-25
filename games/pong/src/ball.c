@@ -31,6 +31,28 @@ void ball_update(Ball *ball)
 	ball->y += (((rand() % 101) / 100.0) - 0.5) * 8;
 #endif
 
+	// Handle paddle collisions
+	int pos;
+
+	if ((pos = ball_hit_any_paddle(ball)) != -1)
+	{
+		// Reverse the ball's speed
+		int ball_xs_sign = signf(ball->xs);
+		ball->xs = -ball_xs_sign;
+
+		// Move the ball out of the paddle
+		while (ball_hit_any_paddle(ball) != -1)
+			ball->x += ball->xs;
+
+		// Calculate the new x & y speeds of the ball
+		// This depends on the pos returned by the initial call to ball_hit_any_paddle()
+		double edge_factor = (double) pos / PADDLE_HIT_POS_MAX;
+		double edge_inverse = 1 - fabs(edge_factor);
+
+		ball->xs = -ball_xs_sign * ball->maxs * edge_inverse;
+		ball->ys = ball->maxs * edge_factor;
+	}
+
 	// Move the ball and bounce it off of the game world border
 
 	// Touching the right side
@@ -65,19 +87,6 @@ void ball_update(Ball *ball)
 	{
 		ball->y = BALL_Y_MIN;
 		ball->ys *= -1;
-	}
-
-	// Handle paddle collisions
-	int pos;
-	if ((pos = ball_hit_any_paddle(ball)) != -1)
-	{
-		PERR("%d\n", pos);
-		int ball_xs_sign = signf(ball->xs);
-		ball->xs = -ball_xs_sign;
-		while (ball_hit_any_paddle(ball) != -1)
-			ball->x += ball->xs;
-		ball->ys = clampf(((float) abs(pos - PADDLE_HEIGHT) / PADDLE_HEIGHT) * ball->maxs, ball->mins, ball->maxs);
-		ball->xs = clampf(((float) (PADDLE_HEIGHT - abs(pos - PADDLE_HEIGHT)) / PADDLE_HEIGHT) * ball->maxs, ball->mins, ball->maxs) * -ball_xs_sign;
 	}
 }
 

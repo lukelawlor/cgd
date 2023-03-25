@@ -56,6 +56,6 @@ static int ball_hit_paddle(SDL_Rect *ball_rect, Paddle *paddle)
 		PADDLE_HEIGHT,
 	};
 	if (rect_hit_rect(ball_rect, &paddle_rect))
-		return clamp((ball_rect->y - ball_rect->h / 2) - paddle->y, 0, PADDLE_HEIGHT);
+		return clamp((ball_rect->y + ball_rect->h / 2) - (paddle_rect.y + paddle_rect.h / 2), -PADDLE_HIT_POS_MAX, PADDLE_HIT_POS_MAX);
 	return -1;
 }

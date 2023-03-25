@@ -14,7 +14,6 @@ int main(void)
 #endif
 
 	char str[] = "hello";
-
 	char *ptr = &str[0];
 
 	while (*ptr != '\0')

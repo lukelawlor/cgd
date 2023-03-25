@@ -5,7 +5,7 @@ INCLUDE_DIR = ../include
 LIB_DIR = ../lib
 
 CC = gcc
-CFLAGS = -I$(INCLUDE_DIR) -Wall -Wextra
+CFLAGS = -I$(INCLUDE_DIR) -Wall -Wextra -g
 DEPFLAGS = -MMD -MP
 LDFLAGS = -L$(LIB_DIR) -Wl,-subsystem,console -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer
 
