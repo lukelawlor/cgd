@@ -27,7 +27,7 @@ static void ball_reset(Ball *ball);
 void ball_update(Ball *ball)
 {
 	// Randomly move the ball
-#if 1
+#if 0
 	ball->x += (((rand() % 101) / 100.0) - 0.5) * 8 * g_ts;
 	ball->y += (((rand() % 101) / 100.0) - 0.5) * 8 * g_ts;
 #endif

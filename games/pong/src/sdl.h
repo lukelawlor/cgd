@@ -10,7 +10,7 @@
 #include <SDL2/SDL.h>
 
 // Window dimensions
-#define	WIN_WIDTH	800
+#define	WIN_WIDTH	1800
 #define	WIN_HEIGHT	800
 
 // Renderer creation flags
