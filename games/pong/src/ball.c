@@ -17,6 +17,7 @@
 #include "score.h"
 #include "sdl.h"	// For g_ren, WIN_WIDTH, & WIN_HEIGHT
 #include "texture.h"	// For tex_ball
+#include "timestep.h"
 #include "util/math.h"	// For sign()
 
 // Resets the ball's position to the center of the game
@@ -26,10 +27,48 @@ static void ball_reset(Ball *ball);
 void ball_update(Ball *ball)
 {
 	// Randomly move the ball
-#if 0 
-	ball->x += (((rand() % 101) / 100.0) - 0.5) * 8;
-	ball->y += (((rand() % 101) / 100.0) - 0.5) * 8;
+#if 1
+	ball->x += (((rand() % 101) / 100.0) - 0.5) * 8 * g_ts;
+	ball->y += (((rand() % 101) / 100.0) - 0.5) * 8 * g_ts;
 #endif
+
+	// Move the ball and bounce it off of the game world border
+	bool should_reset = false;
+
+	// Pointer to point value to increase when the ball should reset
+	int *score_to_increase = NULL;
+
+	// Touching the right side
+	ball->x += ball->xs * g_ts;
+	if (ball->x > BALL_X_MAX)
+	{
+		ball->x = BALL_X_MAX;
+		score_to_increase = &g_score.pts_right;
+		should_reset = true;
+	}
+
+	// Touching the left side
+	else if (ball->x < BALL_X_MIN)
+	{
+		ball->x = BALL_X_MIN;
+		score_to_increase = &g_score.pts_left;
+		should_reset = true;
+	}
+
+	// Touching the bottom side
+	ball->y += ball->ys * g_ts;
+	if (ball->y > BALL_Y_MAX)
+	{
+		ball->y = BALL_Y_MAX;
+		ball->ys *= -1;
+	}
+
+	// Touching the top side
+	else if (ball->y < BALL_Y_MIN)
+	{
+		ball->y = BALL_Y_MIN;
+		ball->ys *= -1;
+	}
 
 	// Handle paddle collisions
 	int pos;
@@ -49,44 +88,13 @@ void ball_update(Ball *ball)
 		double edge_factor = (double) pos / PADDLE_HIT_POS_MAX;
 		double edge_inverse = 1 - fabs(edge_factor);
 
-		ball->xs = -ball_xs_sign * ball->maxs * edge_inverse;
-		ball->ys = ball->maxs * edge_factor;
+		ball->xs = clampf(ball->max_speed * edge_inverse, ball->min_xs, ball->max_speed) * -ball_xs_sign;
+		ball->ys = ball->max_speed * edge_factor;
 	}
-
-	// Move the ball and bounce it off of the game world border
-
-	// Touching the right side
-	ball->x += ball->xs;
-	if (ball->x > BALL_X_MAX)
+	else if (should_reset)
 	{
-		ball->x = BALL_X_MAX;
-		ball->xs *= -1;
+		++(*score_to_increase);
 		ball_reset(ball);
-		g_score.pts_right++;
-	}
-
-	// Touching the left side
-	else if (ball->x < BALL_X_MIN)
-	{
-		ball->x = BALL_X_MIN;
-		ball->xs *= -1;
-		ball_reset(ball);
-		g_score.pts_left++;
-	}
-
-	// Touching the bottom side
-	ball->y += ball->ys;
-	if (ball->y > BALL_Y_MAX)
-	{
-		ball->y = BALL_Y_MAX;
-		ball->ys *= -1;
-	}
-
-	// Touching the top side
-	else if (ball->y < BALL_Y_MIN)
-	{
-		ball->y = BALL_Y_MIN;
-		ball->ys *= -1;
 	}
 }
 
@@ -112,6 +120,7 @@ void ball_draw(Ball *ball)
 // Resets the ball's position to the center of the game
 static void ball_reset(Ball *ball)
 {
+	ball->xs *= -1;
 	ball->x = WIN_WIDTH / 2;
 	ball->y = WIN_HEIGHT / 2;
 }

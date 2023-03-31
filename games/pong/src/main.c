@@ -30,7 +30,8 @@ int main(int argc, char **argv)
 		.y = 80,
 		.xs = 4,
 		.ys = 0,
-		.maxs = 25.1,
+		.min_xs = 2,
+		.max_speed = 2,
 	};
 
 	// Game loop

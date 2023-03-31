@@ -14,6 +14,7 @@
 #include "score.h"
 #include "sdl.h"
 #include "texture.h"
+#include "timestep.h"
 
 // Initializes everything needed to start the game loop, returns nonzero on error
 int game_init(void)
@@ -39,6 +40,29 @@ int game_init(void)
 		PERR("SDL_CreateWindow like failed or stuff. %s\n", SDL_GetError());
 		goto l_error;
 	}
+
+	// Set timestep
+	SDL_DisplayMode dm;
+	int di = SDL_GetWindowDisplayIndex(g_win);
+
+	// Monitor refresh rate
+	int refresh_rate;
+
+	if (SDL_GetCurrentDisplayMode(di, &dm) == 0)
+	{
+		if (dm.refresh_rate != 0)
+		{
+			// Got refresh rate
+			refresh_rate = dm.refresh_rate;
+		}
+		else
+		{
+			// Couldn't get refresh rate
+			refresh_rate = 60;
+		}
+	}
+	refresh_rate = 60;
+	g_ts = refresh_rate / 60.0;
 
 	// Create the renderer
 	g_ren = SDL_CreateRenderer(

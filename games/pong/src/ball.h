@@ -10,8 +10,8 @@
 #include "game.h"	// For ARENA_BORDER
 #include "sdl.h"	// For WIN_WIDTH and WIN_HEIGHT
 
-#define	BALL_WIDTH	40
-#define	BALL_HEIGHT	5
+#define	BALL_WIDTH	30
+#define	BALL_HEIGHT	30
 #define	BALL_X_MIN	ARENA_BORDER
 #define	BALL_X_MAX	(WIN_WIDTH - ARENA_BORDER - BALL_WIDTH)
 #define	BALL_Y_MIN	ARENA_BORDER
@@ -28,8 +28,11 @@ typedef struct Ball{
 	// Y speed
 	double ys;
 
+	// The minimum speed that xs can hold
+	double min_xs;
+
 	// The maximum speed that xs or ys can hold
-	double maxs;
+	double max_speed;
 } Ball;
 
 // Updates a ball
