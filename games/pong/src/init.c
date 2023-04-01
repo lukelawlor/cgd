@@ -6,6 +6,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 
 #include "error.h"
 #include "game.h"
@@ -13,6 +14,7 @@
 #include "paddle.h"
 #include "score.h"
 #include "sdl.h"
+#include "sound.h"
 #include "texture.h"
 #include "timestep.h"
 
@@ -22,7 +24,7 @@ int game_init(void)
 	// Init SDL
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
 	{
-		PERR("SDL_Init failed. %s\n", SDL_GetError());
+		PERR("SDL_Init failed. %s", SDL_GetError());
 		goto l_error;
 	}
 
@@ -37,7 +39,7 @@ int game_init(void)
 	);
 	if (g_win == NULL)
 	{
-		PERR("SDL_CreateWindow like failed or stuff. %s\n", SDL_GetError());
+		PERR("SDL_CreateWindow like failed or stuff. %s", SDL_GetError());
 		goto l_error;
 	}
 
@@ -72,14 +74,28 @@ int game_init(void)
 	);
 	if (g_ren == NULL)
 	{
-		PERR("SDL_CreateRenderer failed. %s\n", SDL_GetError());
+		PERR("SDL_CreateRenderer failed. %s", SDL_GetError());
 		goto l_error;
 	}
 
 	// Initialize SDL_image
 	if (!(IMG_Init(IMG_FLAGS) & IMG_FLAGS))
 	{
-		PERR("IMG_Init failed. %s\n", IMG_GetError());
+		PERR("IMG_Init failed. %s", IMG_GetError());
+		goto l_error;
+	}
+
+	// Initialize SDL_mixer
+	if (!(Mix_Init(MIX_FLAGS) & MIX_FLAGS))
+	{
+		PERR("Mix_Init failed. %s", Mix_GetError());
+		goto l_error;
+	}
+
+	// Open audio channels
+	if (Mix_OpenAudio(MIX_RATE, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+	{
+		PERR("Mix_OpenAudio failed. %s", Mix_GetError());
 		goto l_error;
 	}
 	
@@ -103,6 +119,8 @@ int game_init(void)
 
 	if (tex_load_all())
 		goto l_error;
+	if (snd_load_all())
+		goto l_error;
 
 	// Success
 	return 0;
@@ -114,9 +132,11 @@ l_error:
 // Undoes initialization steps done by game_init()
 void game_quit(void)
 {
+	snd_free_all();
 	tex_free_all();
 	SDL_DestroyWindow(g_win);
 	SDL_DestroyRenderer(g_ren);
+	Mix_Quit();
 	IMG_Quit();
 	SDL_Quit();
 }

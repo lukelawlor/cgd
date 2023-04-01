@@ -60,7 +60,7 @@ static SDL_Texture *tex_load_png(const char *path)
 	surf = IMG_Load(path);
 	if (surf == NULL)
 	{
-		PERR("IMG_Load failed for file \"%s\". %s\n", path, IMG_GetError());
+		PERR("IMG_Load failed for file \"%s\". %s", path, IMG_GetError());
 		return NULL;
 	}
 
@@ -68,7 +68,7 @@ static SDL_Texture *tex_load_png(const char *path)
 	tex = SDL_CreateTextureFromSurface(g_ren, surf);
 	if (tex == NULL)
 	{
-		PERR("SDL_CreateTextureFromSurface failed for file \"%s\". %s\n", path, IMG_GetError());
+		PERR("SDL_CreateTextureFromSurface failed for file \"%s\". %s", path, IMG_GetError());
 		return NULL;
 	}
 

@@ -15,6 +15,7 @@
 #include "game.h"	// For ARENA_BORDER
 #include "paddle.h"	// For PADDLE_HEIGHT
 #include "score.h"
+#include "sound.h"
 #include "sdl.h"	// For g_ren, WIN_WIDTH, & WIN_HEIGHT
 #include "texture.h"	// For tex_ball
 #include "timestep.h"
@@ -90,6 +91,8 @@ void ball_update(Ball *ball)
 
 		ball->xs = clampf(ball->max_speed * edge_inverse, ball->min_xs, ball->max_speed) * -ball_xs_sign;
 		ball->ys = ball->max_speed * edge_factor;
+
+		snd_play(snd_bounce);
 	}
 	else if (should_reset)
 	{
@@ -123,4 +126,5 @@ static void ball_reset(Ball *ball)
 	ball->xs *= -1;
 	ball->x = WIN_WIDTH / 2;
 	ball->y = WIN_HEIGHT / 2;
+	snd_play(snd_point);
 }

@@ -19,6 +19,12 @@
 // SDL_image init flags
 #define	IMG_FLAGS	IMG_INIT_PNG
 
+// SDL_mixer init flags
+#define	MIX_FLAGS	MIX_INIT_MP3
+
+// Default audio rate
+#define	MIX_RATE	44100
+
 // SDL objects
 extern SDL_Window *g_win;
 extern SDL_Renderer *g_ren;
