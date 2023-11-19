@@ -1,0 +1,4 @@
+#+title: cgd
+This repo contains some demonstrational code for teaching C, SDL, and game programming.
+
+It is part of a bigger project of mine called the C/C++ Game Developers Group, which has a site here: [[https://lukelawlor.codeberg.page/cgd]]
