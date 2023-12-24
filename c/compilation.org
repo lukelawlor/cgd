@@ -1,0 +1,44 @@
+<2023-12-24 Sun> Note: so far this file only details what was covered in meetings. I will add much more content to it later.
+
+* The C compilation process
+If you are writing your program entirely in one file, compiling your program with this shell command will do:
+
+#+begin_src sh
+	cc file.c -o executable_name
+#+end_src
+
+If you split your code across /multiple/ *source files* (.c files) and *header files* (.h files), however, you may want to understand the compilation process at a deeper level. That is what this document will detail.
+
+** Translation units and object files
+A *translation unit* or *compilation unit* is a collection of source code that the compiler reads to output an object file. A translation unit is made up of a source file and all of the header files it may include.
+
+An *object file* (.o file) contains the machine code of a translation unit. One or more object files are fed to the *linker*, a program which will link data, such as function calls between object files, to output the final executable of a program.
+
+** Producing direct object files
+When you run this command:
+
+#+begin_src sh
+	cc file.c -o executable_name
+#+end_src
+
+The compiler will produce object files and link them automatically for you. To only produce object files and skip linking, use the =-c= flag:
+
+#+begin_src sh
+	cc -c file.c
+#+end_src
+
+This will produce the object file =file.o=. If you want to explicitly choose the object file name, use the =-o= flag:
+
+#+begin_src sh
+	cc -c file.c -o file.o
+#+end_src
+
+** Linking object files to produce an executable
+To produce an executable using all of your object files, run this command:
+
+#+begin_src sh
+	cc file.o -o program
+#+end_src
+
+This command will produce the executable file =program=. You may insert as many object file names before =-o= as you like.
+
