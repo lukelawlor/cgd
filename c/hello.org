@@ -40,6 +40,9 @@ Right now, our function has no code. Let's change that:
 	}
 #+end_src
 
+#+RESULTS:
+: Hello World!
+
 When a function is called (another term for a function being executed or run), the *code block*, placed after the function header, is run. This code block is known as the *function definition*. A code block starts with an opening curly bracket ={= and ends with a closing curly bracket =}=. In our code block, we can add *code statements*, which are statements that specify an action for our program to execute. The code statements of a code block are run in order from top to bottom (and left to right if you put multiple statements on one line).
 
 In our code block, the first code statement, =printf("Hello World!\n")= calls the function =printf= from libc and passes ="Hello World!\n"= as input. Our line ends with =;= to denote the end of the code statement.
@@ -96,6 +99,27 @@ Here is a table of some basic escape sequences:
 | =\"= | a double quote      |
 | =\?= | a question mark     |
 | =\0= | null terminator     |
+
+If you place string literals next to each other, the compiler will concatenate (combine) them:
+
+#+begin_src C
+	// Prints:
+	// Hello World!
+	printf("Hello " "World" "!");
+
+	// Prints:
+	// This ison line one
+	// This is on line two
+	printf(
+		"This "
+		"is"
+		"on "
+		"line "
+		"one\n"
+		"This is on "
+		"line two\n"
+	);
+#+end_src
 
 *** Function parameters and arguments
 Functions take in zero or more input values when you call them. The definitions of these input values are called *parameters*. The actual values that are passed as input to a function when the function is called are known as *arguments*. So, in our case, ="Hello World!\n"= was an argument we passed to =printf=.
