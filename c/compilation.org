@@ -42,3 +42,86 @@ To produce an executable using all of your object files, run this command:
 
 This command will produce the executable file =program=. You may insert as many object file names before =-o= as you like.
 
+* Linkage
+*Linkage* is a property of variables and functions that determines if they can be accessed in different source files that are to be compiled and linked into one program.
+
+There are two types of linkage: internal and external.
+
+Variables and functions with *internal linkage* can only be accessed in the translation unit they are defined in. See [[static][here]] to learn how to declare variables and functions with this linkage.
+
+Variables and functions with *external linkage* can be accessed in every translation unit.
+
+** Using functions across different source files
+*** Demonstrational code
+To use /any/ function or variable across different source files (which will be included in different translation units), the function or variable needs to have external linkage.
+
+By default, all functions have external linkage.
+
+Here is some code to illustrate this:
+
+This is my file =sum.c=, which contains the definition for the function =sum=:
+
+#+begin_src C
+	// Returns the sum of two integers
+	int sum(int x, int y)
+	{
+		return x + y;
+	}
+#+end_src
+
+This is my file =main.c=:
+
+#+begin_src C
+	#include <stdio.h>
+
+	// Returns the sum of two integers
+	int sum(int x, int y);
+
+	int main(void)
+	{
+		printf("The sum of 2 and 3 is %d\n", sum(2, 3));
+		return 0;
+	}
+#+end_src
+
+I will use both of these source files in the same program, which I will compile with the following shell commands:
+
+#+begin_src sh
+	gcc -c sum.c
+	gcc -c main.c
+	gcc sum.o main.o -o test
+#+end_src
+
+This should work perfectly fine. Functions have external linkage by default, therefore =sum= has external linkage so I am able to call it from =main.c= even if it is defined in =sum.c=. The program links successfully with the execution of the last command because the linker was able to find the definition of =sum= in =sum.o=.
+
+If I left =sum.o= out of the final compile command, I would see a linker error such as this:
+
+#+begin_src text
+/usr/lib/gcc/x86_64-pc-linux-gnu/13/../../../../x86_64-pc-linux-gnu/bin/ld: main.o: in function `main':
+main.c:(.text+0xf): undefined reference to `sum'
+collect2: error: ld returned 1 exit status
+#+end_src
+
+It is the *linker*'s job to handle linkage of variables and functions, not the compiler's job. That is why we get a linker error. You can typically tell a linker error apart from a compiler error because linker errors contain some reference to the program =ld=, which is the linker on UNIX.
+
+*** The problem with our code and the solution
+While our example code /does/ work, it has some flaws that become apparent when we begin adding more to our program.
+
+What if we wanted to include more source files that used the =sum= function? We would need to copy and paste the function prototype of =sum= in each of these files. That would be a violation of the DRY principle: don't repeat yourself. Violating DRY means your program will be harder to modify. If we wanted to change the arguments of =sum=, we would need to find every occurence of =sum='s prototypes and change them as well!
+
+The solution is to store the function prototype for =sum= in a [[header_files][header file]], which we will cover in the next section.
+
+** TODO Using header files
+<<header_files>>
+
+** TODO Using global variables across different source files
+
+** TODO Using structs across different source files
+
+** TODO The static keyword in linkage
+<<static>>
+
+* Sources
++ For Linkage
+  + [[https://www.geeksforgeeks.org/internal-linkage-external-linkage-c/][geeksforgeeks.org]]
+  + [[https://learn.microsoft.com/en-us/cpp/c-language/linkage?view=msvc-170][microsoft.com]]
