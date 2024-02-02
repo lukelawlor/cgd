@@ -59,6 +59,8 @@ By default, all functions have external linkage.
 
 Here is some code to illustrate this:
 
+<<external_linkage_demo>>
+
 This is my file =sum.c=, which contains the definition for the function =sum=:
 
 #+begin_src C
@@ -89,7 +91,7 @@ I will use both of these source files in the same program, which I will compile 
 #+begin_src sh
 	gcc -c sum.c
 	gcc -c main.c
-	gcc sum.o main.o -o test
+	gcc sum.o main.o -o program
 #+end_src
 
 This should work perfectly fine. Functions have external linkage by default, therefore =sum= has external linkage so I am able to call it from =main.c= even if it is defined in =sum.c=. The program links successfully with the execution of the last command because the linker was able to find the definition of =sum= in =sum.o=.
@@ -111,9 +113,78 @@ What if we wanted to include more source files that used the =sum= function? We 
 
 The solution is to store the function prototype for =sum= in a [[header_files][header file]], which we will cover in the next section.
 
-** TODO Using header files
+** TODO Header files
 <<header_files>>
 
+*Header files* (ending in .h), or *headers*, are files that contain commonly re-used code to be =#include='d at the top of other header or source files in our program, hence the name.
+
+As we learn more about different C concepts, we will need to know whether the lines of code they involve should go in header or source files. Generally, code statements (instructions that cause the computer to actually execute something) go in source files, and information for the compiler to use, such as function prototypes, goes in header files.
+
+*** TODO Using function prototypes in header files
+Function prototypes for functions with external linkage are best placed in header files.
+
+**** Demonstrational code
+Building on our [[external_linkage_demo][previous code for demonstrating use of functions with external linkage]], I will create a new header file =sum.h=:
+
+#+begin_src C
+	// Returns the sum of two integers
+	int sum(int x, int y);
+#+end_src
+
+Now, instead of writing the raw function prototype into =main.c=, I can simply =#include= =sum.h= in =main.c=:
+
+#+begin_src C
+	#include <stdio.h>
+
+	#include "sum.h" // For sum()
+
+	int main(void)
+	{
+		printf("The sum of 2 and 3 is %d\n", sum(2, 3));
+		return 0;
+	}
+#+end_src
+
+**** #include paths
+Notice how I used double quotes around =sum.h= in the =#include= statement. These indicate that =sum.h= is a relative path. Any path enclosed in double quotes indicates a path relative to the directory that the file containing the =#include= statement is in.
+
+Any path enclosed in angle brackets =<>=, such as =stdio.h=, is relative to the include directories available to the compiler. The compiler will search for the named file and error if it isn't found in any of the include directories.
+
+On UNIX, =/usr/include= is one of these directories. You can add to this list of directories by running the compiler with the =-I= option. For example, passing =-I.= will add the working directory to the list of include directories.
+
+See [[../unix/shell.org][this document]] for an explanation of relative vs absolute paths.
+
+**** #include comments
+I added the comment "For sum()" after =#include='ing =sum.h= to make my intentions clearer. I recommend that you do the same in commenting what you need from each header file.
+
+The more code we add to =sum.h=, the harder it is to tell which functions need to be used by which source files. Also, if we want to move a function prototype from =sum.h= to some other header file, our comments will let us know which files need their =#include= statements altered accordingly.
+
+**** TODO The benefits of header files
+Header files allow us to follow the DRY (don't repeat yourself) principle. With them, we can avoid rewriting the same function prototypes where they are needed. We can also update our function prototypes everywhere they are used by just changing them in one file.
+
+*** TODO Header guards
+A *header guard* is a mechanism that prevents a header file from being included more than once in one translation unit. Avoiding the use of one can cause errors.
+
+So far, we only know to add function prototypes to our header files. No errors occur if these are repeated, however, code that we will later learn to place in header files /can/ cause errors when repeated.
+
+**** Traditional #ifndef ... #endif guards
+The standard way to implement header guards is to use the =#ifndef=, =#define= and =#endif= preprocessor statements like so:
+
+=sum.h=:
+
+#+begin_src C
+	#ifndef SUM_H
+	#define SUM_H
+
+	// Returns the sum of two integers
+	int sum(int x, int y);
+
+	#endif
+#+end_src
+
+The =#ifndef= statement is short for "if not defined." It checks
+
+**** TODO #pragma once
 ** TODO Using global variables across different source files
 
 ** TODO Using structs across different source files

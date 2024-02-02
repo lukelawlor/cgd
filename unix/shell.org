@@ -115,6 +115,21 @@ Here is a shell session demonstrating this:
 	/tmp/lwd/projects
 #+end_src
 
+** Relative vs absolute paths
+There are two types of paths: relative and absolute.
+
+*Relative paths* point to directories or files relative to a specific directory. When you're using the shell, relative paths are most commonly relative to the working directory. They start with a file or directory name. Examples include:
++ "." working directory
++ "file" a file in the working directory
++ "./file" still a fill in the working directory
++ "../.." back two directories
+
+*Absolute paths* start with the root directory. Examples include:
++ "/home/user" the home directory of a user on Linux
++ "/home/user/file" a file in the user's home directory
+
+Some programs distinguish between relative paths that do and do not start with "./". For example, =man= will pull up a manual page named after the first argument in a preset directory, but if your first argument starts with "./", it will search for the manual page relative to the working directory. 
+
 ** Basic commands recap
 | Command   | Action                              |
 |-----------+-------------------------------------|
@@ -124,3 +139,18 @@ Here is a shell session demonstrating this:
 | cd        | enter your home directory           |
 | cd /      | enter the root directory            |
 | mkdir dir | make the directory "dir"            |
+
+** Further reading
+You can use the program =man=, short for manual, to bring up manual pages that detail how to use different UNIX programs. Here are some example shell commands to view manual pages:
+
+#+begin_src sh
+	# View the manual page for cd
+	man cd
+
+	# View the manual page for ls
+	man ls
+
+	# View the manual page for man
+	man man
+#+end_src
+
