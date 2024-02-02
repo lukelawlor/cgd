@@ -113,14 +113,14 @@ What if we wanted to include more source files that used the =sum= function? We 
 
 The solution is to store the function prototype for =sum= in a [[header_files][header file]], which we will cover in the next section.
 
-** TODO Header files
+** Header files
 <<header_files>>
 
 *Header files* (ending in .h), or *headers*, are files that contain commonly re-used code to be =#include='d at the top of other header or source files in our program, hence the name.
 
 As we learn more about different C concepts, we will need to know whether the lines of code they involve should go in header or source files. Generally, code statements (instructions that cause the computer to actually execute something) go in source files, and information for the compiler to use, such as function prototypes, goes in header files.
 
-*** TODO Using function prototypes in header files
+*** Using function prototypes in header files
 Function prototypes for functions with external linkage are best placed in header files.
 
 **** Demonstrational code
@@ -145,6 +145,8 @@ Now, instead of writing the raw function prototype into =main.c=, I can simply =
 	}
 #+end_src
 
+It is a convention to name your header files after the source file they are related to. I named the header file =sum.h= because it contains the function prototype for =sum=, whose function definition is in =sum.c=.
+
 **** #include paths
 Notice how I used double quotes around =sum.h= in the =#include= statement. These indicate that =sum.h= is a relative path. Any path enclosed in double quotes indicates a path relative to the directory that the file containing the =#include= statement is in.
 
@@ -159,11 +161,11 @@ I added the comment "For sum()" after =#include='ing =sum.h= to make my intentio
 
 The more code we add to =sum.h=, the harder it is to tell which functions need to be used by which source files. Also, if we want to move a function prototype from =sum.h= to some other header file, our comments will let us know which files need their =#include= statements altered accordingly.
 
-**** TODO The benefits of header files
+**** The benefits of header files
 Header files allow us to follow the DRY (don't repeat yourself) principle. With them, we can avoid rewriting the same function prototypes where they are needed. We can also update our function prototypes everywhere they are used by just changing them in one file.
 
-*** TODO Header guards
-A *header guard* is a mechanism that prevents a header file from being included more than once in one translation unit. Avoiding the use of one can cause errors.
+*** Header guards
+A *header guard* or *include guard* is a mechanism that prevents a header file from being included more than once in one translation unit. Not using one can cause errors.
 
 So far, we only know to add function prototypes to our header files. No errors occur if these are repeated, however, code that we will later learn to place in header files /can/ cause errors when repeated.
 
@@ -182,12 +184,99 @@ The standard way to implement header guards is to use the =#ifndef=, =#define= a
 	#endif
 #+end_src
 
-The =#ifndef= statement is short for "if not defined." It checks
+The =#ifndef= statement is short for "if not defined." It checks if the symbol it is given (in this case =SUM_H=) is not defined. If it isn't, the section of code spanning from just after =#ifndef= to the next =#endif= is kept in the file. If the symbol /is/ defined, this section of code is deleted.
 
-**** TODO #pragma once
-** TODO Using global variables across different source files
+When =sum.h= is included for the first time in a translation unit, =SUM_H= shouldn't be defined, so the code between =#ifndef= and =#endif= is kept. The next time =sum.h= is included, =SUM_H= should already be defined, so the rest of the code in the header file is ignored.
 
-** TODO Using structs across different source files
+You can name the symbol that =#ifndef= checks whatever you want, as long as you're sure it won't be defined before the header file is included for the first time. A common convention is to name it the header file's filename in all uppercase, replacing =.h= with =_H=.
+
+Be careful not to reuse the same symbol for different header files. If you have two header files with the same filename in your project, but they are stored in different directories, you may want to include the directory name in the symbol in the header guard. For example, a file =a.h= in the directory =b= could use the symbol =B_A_H=.
+
+FYI, there is an =#ifdef= preprocessor statement you can use, which does the same thing as =#ifndef= but keeps the next code section if the symbol /is/ defined.
+
+**** #pragma once
+You can use the preprocessor statement =#pragma once= to implement a header guard:
+
+=sum.h=:
+
+#+begin_src C
+	#pragma once
+
+	// Returns the sum of two integers
+	int sum(int x, int y);
+#+end_src
+
+This is easier to type than a traditional header guard and lets you skip having to name a symbol to be used for the =#ifndef= statement. A downside to this approach, however, is that the =#pragma= statement is not standardized in the C language, so you need to verify that the compiler you use supports it.
+
+** Using global variables across different source files
+<<extern_declarations>>
+
+All global variables have external linkage by default. To access a global variable from a source file where it is not declared, you need an extern declaration.
+
+An *extern declaration* tells the compiler about _the potential existence_ of a global variable that could be in another translation unit of the program. It is not an actual declaration of a variable. All an extern declaration does is stop the compiler from erroring when it sees use of a variable that wasn't declared in the current translation unit.
+
+To write an extern declaration, simply write a declaration statement for your global variable and prepend it with the =extern= keyword.
+
+#+begin_src C
+	// Extern declaration
+	extern int g_x;
+
+	// Declaration of global variable g_x
+	int g_x;
+#+end_src
+
+Declaration of global variables should go in source files. Extern declarations should go in header files.
+
+*** Demonstrational code
+This program will demonstrate accessing a global variable from a source file where it isn't declared. It will contain three files: =x.h=, =x.c= and =main.c=.
+
+=x.h=:
+
+#+begin_src C
+	#ifndef X_H
+	#define X_H
+
+	// This variable is used to test external linkage of global variables
+	extern int g_x;
+
+	#endif
+#+end_src
+
+=x.c=:
+
+#+begin_src C
+	#include "x.h"
+
+	// This variable is used to test external linkage of global variables
+	int g_x;
+#+end_src
+
+=main.c=:
+
+#+begin_src C
+	#include <stdio.h>
+
+	#include "x.h" // For g_x
+
+	int main(void)
+	{
+		printf("The value of g_x is %d\n", g_x);
+		return 0;
+	}
+#+end_src
+
+You can compile this program with the following shell commands:
+
+#+begin_src sh
+	gcc -c x.c
+	gcc -c main.c
+	gcc x.o main.o -o extern_test
+#+end_src
+
+** Using structs across different source files
+Struct definitions should be placed in header files. To use global variables with struct types across different source files, create [[extern_declarations][extern declarations]] like you would with other global variables.
+
+See [[./struct.c][struct.c]] for general notes on structs.
 
 ** TODO The static keyword in linkage
 <<static>>
