@@ -278,8 +278,26 @@ Struct definitions should be placed in header files. To use global variables wit
 
 See [[./struct.c][struct.c]] for general notes on structs.
 
-** TODO The static keyword in linkage
+** The static keyword in linkage
 <<static>>
+
+The =static= keyword has different meanings in different contexts.
+
++ When used on _functions and global variables_, =static= affects _linkage_
++ When used on _local variables_, =static= affects _variable lifetime_
+
+In this section, I will cover how =static= affects linkage. See [[./static.c][static.c]] for its use on local variables.
+
+=static= makes functions and global variables have *internal linkage*. To use =static= with a global variable, add =static= before the type in the declaration or initialization statement. To use =static= with a function, add =static= before the return type like so:
+
+#+begin_src C
+	static int sum(int x, int y);
+	static int g_x;
+#+end_src
+
+You may want to use =static= for functions and global variables that you only need to use in one file.
+
+Since =static= symbols don't have external linkage, you shouldn't put them in header files.
 
 * Sources
 + For Linkage
