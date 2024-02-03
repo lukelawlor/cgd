@@ -299,7 +299,267 @@ You may want to use =static= for functions and global variables that you only ne
 
 Since =static= symbols don't have external linkage, you shouldn't put them in header files.
 
-* Sources
+* Build systems
+Compiling and linking an entire program is known as *building*.
+
+A *build system* is a system that handles the execution of compiler commands needed to build a program, usually to automate the process.
+
+In this section, we will explore various ways to set up build systems. As of <2024-02-03 Sat>, this section only details build systems that work on UNIX-like OSes such as macOS and GNU/Linux. You can use these build systems on Windows if you run them through [[https://www.msys2.org/][MSYS2]].
+
+** Shell scripts
+In my opinion, a shell script is the easiest-to-create and most basic build system. Depending on how you write them, they can make for fairly rudimentary build systems, but if your project is small in scope and its number of source files, you may get by with one.
+
+On UNIX, a *shell script* is a file in which each line of text is a shell command that gets run. Like C, execution runs from top to bottom.
+
+*** Writing a shell script
+To write a shell script, open a new text file and name it whatever you want. Shell script filenames typically end in =.sh=.
+
+On the first line of your script, we must write a *shebang*, which specifies what interpreter will execute the rest of the contents of the file. An *interpreter* is a program that reads code in text form and executes it line by line. To write the shebang, write =#!= followed by the absolute path to the interpreter program:
+
+#+begin_src sh
+	#!/bin/bash
+#+end_src
+
+Since we are writing a _shell_ script, I picked =bash=, the Bourne-Again SHell, as our interpreter. It is available on most Linux distros.
+
+Now, we can start writing the commands we want the script to run, line by line:
+
+#+begin_src sh
+	#!/bin/bash
+
+	# Test some stuff
+	echo line 1
+	echo line 2
+	echo line 3
+	echo Hello World!
+#+end_src
+
+Lines that start with =#=, besides the shebang, are comments.
+
+*** Running a shell script
+To run our shell script, we can type the path to it on the shell, starting with =./=, just like we would when running any other program.
+
+You will probably get this error, though, if your shell script was newly created:
+
+#+begin_src text
+bash: ./script.sh: Permission denied
+#+end_src
+
+In this case, we need to give executable permissions to our file so we are able to execute it. You can do that with the =chmod= command:
+
+#+begin_src sh
+	chmod +x script.sh
+#+end_src
+
+Replace =script.sh= with the file you want to give executable permissions to.
+
+Now you should be able to run your script.
+
+*** Writing a shell script to build a program
+We can make our shell script into a build system by populating it with compiler commands.
+
+If we wanted to build our [[external_linkage_demo][external linkage demo program]], for example, we could use this script:
+
+#+begin_src sh
+	#!/bin/bash
+	gcc -c sum.c
+	gcc -c main.c
+	gcc sum.o main.o -o program
+#+end_src
+
+Since the ultimate goal of the script is to build the program and we don't need the individual object files for anything, we could just compile and link everything in one command like so:
+
+<<shell_script_build_system>>
+
+#+begin_src sh
+	#!/bin/bash
+	gcc sum.c main.c -o program
+#+end_src
+
+*** Problems with this setup
+The biggest issue with this shell script build system is that it re-compiles every source file in the program each time it is run. This can be problematic if we just made a small change to one source file and wanted to re-link the program. All that we need to do to re-link the program is recompile the _one_ source file we changed and re-link, however, this script compiles _all_ source files and links in one command, so we would have to run the compile commands on our own to get what we want. This issue will only be exacerbated as we add more source files to our program.
+
+Still, though, if your program is fairly small, using a shell script like this as a build system is fine.
+
+There also may be some way to use shell scripts to create more elaborate build systems than this, but I don't know enough about shell scripting to do that.
+
+** Makefiles
+I have learned most of what I know about makefiles through this tutorial website: [[https://makefiletutorial.com/][Makefile Tutorial By Example]]. It is very well written, possibly more so than my own writing, so check it out if you want. If you like the way I explain things, read on.
+
+*** A basic intro to makefiles
+A *makefile* is a text file that gets read by the UNIX utility =make=, which is used to run commands used to maintain groups of files that depend on each other. Most people use makefiles as build systems, but it's possible to use them for other purposes as well.
+
+When you run =make= with no additional arguments, it will automatically try to find a makefile in the working directory named =makefile= or =Makefile=. If you use GNU make, it will also search for a makefile named =GNUmakefile=. It is recommended that you only name your makefile this if it uses a feature of GNU make that isn't present in other versions of =make=.
+
+The goal of using makefiles as build systems is to create rule
+
+**** Syntax
+In a makefile, lines starting with =#= are comments.
+
+**** Rules
+***** Syntax of a rule
+A *rule* is a section of a makefile that specifies what file(s) a file depends on to be created and what shell commands must be run to create the file. Rules follow this syntax:
+
+#+begin_src makefile
+	target: prerequisites ...
+		recipe command 1
+		recipe command 2
+		recipe command 3
+		...
+#+end_src
+
+The *target* is the file that needs to be created.
+
+The *prerequisites* are one or more files, separated by a space character, that must exist for the target to be created. If any of the prerequisites are modified since the last time the target was created, the target will be re-created.
+
+The *recipe* is the sequence of shell commands that are meant to create the target. Each command exists on its own line, tabbed up once from the target. The recipe ends when the tabulation stops.
+
+***** How rules are processed
+The first rule that gets processed depends on how =make= is run. If you run =make= with no additional arguments, the first rule that gets processed is the first rule that appears in the file when its read from top to bottom. If you run =make= with arguments that don't start with =-=, =make= will attempt to process the rules whose targets are the names of the arguments.
+
+Before the recipe for a rule is run, =make= will ensure that the prerequisites have been created by processing the rules whose targets are the prerequisites.
+
+***** Demo
+Here is a demonstrational makefile to build our [[external_linkage_demo][external linkage demo program]]:
+
+<<first_makefile_demo>>
+
+#+begin_src makefile
+	program: main.o sum.o
+		gcc main.o sum.o -o program
+
+	main.o: main.c sum.h
+		gcc -c main.c
+
+	sum.o: sum.c sum.h
+		gcc -c sum.c
+#+end_src
+
+Running =make=, I get this output:
+
+#+begin_src text
+gcc -c main.c
+gcc -c sum.c
+gcc main.o sum.o -o program
+#+end_src
+
+=make= will print every recipe command it runs to standard output. To suppress this, you can add =@= to the start of the recipe commands you don't want to be echoed.
+
+****** Pros of this build system
++ Unlike our [[shell_script_build_system][shell script]], it will only re-compile the source files whose dependencies changed since the last build
++ We can directly specify what files we want to create (e.g. running =make main.o= will run the recipe for =main.o=)
+
+****** Cons of this build system
++ We have to write rules to create object files manually
++ We have to keep track of which object files depend on which headers
+
+****** My personal thoughts on this build system
+Despite the cons, I personally think that this build system is better than our [[shell_script_build_system][shell script]]. We can remedy having to manually write rules for object files by writing a makefile that automatically finds the source files used in our program and writes rules for them. I will later explain how to write one [[automated_makefile_begin][here]], but don't skip ahead to that without reading the rest of the content in this section, as it builds on such content.
+
+Even without a makefile that automatically generates rules for source files, you can get by just fine. For example, see [[https://git.suckless.org/dwm/file/Makefile.html][the makefile for dwm]], a somewhat popular minimal window manager for X11.
+
+**** Variables
+We can use variables in makefiles to store and reuse text. Common variables to create include:
++ =CC= :: the C compiler to use
++ =CFLAGS= :: flags to pass to the C compiler when compiling source files
++ =LDFLAGS= :: flags to pass to the C compiler when linking object files
+
+I personally like creating a variable for the program name named =BIN=.
+
+To create a variable, write its name, then ":=" and its value.
+To access a variable, use =$(VARIABLE_NAME)= or =${VARIABLE_NAME}=.
+
+Just like in C, variables make our code easier to modify and help us follow the DRY principle.
+
+***** Demo
+Implementing variables into our [[first_makefile_demo][first makefile demo]], our new makefile may look like this:
+
+<<second_makefile_demo>>
+
+#+begin_src makefile
+	CC := gcc
+
+	# The -g flag includes debugging information in object files
+	CFLAGS := -g
+
+	# This stores no value
+	LDFLAGS :=
+
+	# Binary to build
+	BIN := program
+
+	$(BIN): main.o sum.o
+		$(CC) main.o sum.o -o $(BIN) $(LDFLAGS)
+
+	main.o: main.c sum.h
+		$(CC) $(CFLAGS) -c main.c
+
+	sum.o: sum.c sum.h
+		$(CC) $(CFLAGS) -c sum.c
+#+end_src
+
+**** Phony targets
+It is common practice to create rules that exist to easily run recipes rather than generate target files.
+
+An example of this is creating a rule for the target =clean=, which will be used to store a recipe that removes the files generated during building:
+
+#+begin_src makefile
+	clean:
+		# The asterisk (*) will match anything, so "*.o" will expand to all files ending in ".o" in the working directory
+		# Be very careful when using * to remove files, as you wouldn't want to remove the wrong files
+		rm *.o
+#+end_src
+
+Since =clean='s recipe doesn't actually generate a file named =clean=, =clean= is a *phony target*.
+
+The problem with this is that, if a file named =clean= did exist, the recipe wouldn't run. To mark =clean= as a phony target so that it will run regardless, we can create a rule with the special traget =.PHONY= and add =clean= as a prerequisite:
+
+#+begin_src
+	.PHONY: clean
+#+end_src
+
+***** Demo
+Adding a =clean= phony target to our [[second_makefile_demo][second makefile demo]], we get this:
+
+<<third_makefile_demo>>
+
+#+begin_src makefile
+	CC := gcc
+
+	# The -g flag includes debugging information in object files
+	CFLAGS := -g
+
+	# This stores no value
+	LDFLAGS :=
+
+	# Binary to build
+	BIN := program
+
+	$(BIN): main.o sum.o
+		$(CC) main.o sum.o -o $(BIN) $(LDFLAGS)
+
+	main.o: main.c sum.h
+		$(CC) $(CFLAGS) -c main.c
+
+	sum.o: sum.c sum.h
+		$(CC) $(CFLAGS) -c sum.c
+
+	.PHONY: clean
+
+	clean:
+		rm *.o
+		rm $(BIN)
+#+end_src
+
+*** TODO Crazy automated makefile
+<<automated_makefile_begin>>
+
+In this section, I will explain how to create a makefile that automatically finds the source files in a given directory and generates rules for them. The makefile we create will be similar to [[https://codeberg.org/lukelawlor/soupdl/src/branch/main/Makefile][the one I use to build my game SoupDL 06]].
+
+* Sources for these notes
 + For Linkage
   + [[https://www.geeksforgeeks.org/internal-linkage-external-linkage-c/][geeksforgeeks.org]]
   + [[https://learn.microsoft.com/en-us/cpp/c-language/linkage?view=msvc-170][microsoft.com]]
++ For Makefiles
+  + [[https://makefiletutorial.com/][Makefile Tutorial By Example]]
+  + [[https://www.gnu.org/software/make/manual/][GNU Make Manual]]

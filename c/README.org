@@ -8,7 +8,7 @@ If you are just starting to learn C, this is the order you should read these doc
 + [[./static.c]] :: The static keyword when used on local variables
 + (topics I've yet to write about go here)
 + [[./struct.c]] :: Structures
-+ [[./compilation.org]] :: The C compilation process and linkage
++ [[./compilation.org]] :: The C compilation process, linkage and build systems
 
 These documents can be read out of order:
 
